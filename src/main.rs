@@ -5,6 +5,8 @@ use std::net;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::fs::OpenOptions;
+
 
 // Dependencies imports
 use console::style;
@@ -13,11 +15,12 @@ use console::style;
 fn main() {
     log_info("Starting Program", "ヾ(•ω•`)o");
     log_info("Test Saving", "[]~(￣▽￣)~*");
-    let mut i : u32 = 0;
-    let submission : &str;
-    while i < 50 {
-        i.to_string();
-        save_to_file("1");
+    let mut i : u8 = 0;
+    let mut submission :String;
+    save_to_file(String::from(" "));
+    while i < 255 {
+        submission = i.to_string() + "\n";
+        append_to_file(submission);
         i = i + 1;
     }
 }
@@ -33,32 +36,31 @@ fn log_error(msg : &str, emoji : &str){
 }
 
 fn start_server(){
-
-}
-
-fn save_to_file(data: &str){
-    let file_path = Path::new("instructions.que");
-    
-    let mut file = match File::create(&file_path) {
-        Err(e) => panic!("couldnt open file : {} ... {}", e, style("OwO").red()),
-        Ok(file) => file,
-    };
-    file.write(data.as_bytes());
-    
-    log_info("File Saved", "(ﾉ*･ω･)ﾉ")
     
 }
 
-fn append_to_file(data : String) {
-    let file_path = Path::new("instructions.que");
-    
-    let mut file = match File::create(&file_path) {
-        Err(e) => panic!("couldnt open file : {} ... {}", e, style("OwO").red()),
-        Ok(file) => file,
-    };
-    
-    file.write(data<u8>);
-    
-    log_info("File Saved", "(ﾉ*･ω･)ﾉ")
-    
-}
+// FILE I/O Functions
+
+    fn save_to_file(data: String){
+        let file_path = Path::new("instructions.que");
+        
+        let mut file = match File::create(&file_path) {
+            Err(e) => panic!("couldnt open file : {} ... {}", e, style("OwO").red()),
+            Ok(file) => file,
+        };
+        file.write(&data.as_bytes()).expect("error");
+        
+        log_info("File Saved", "(ﾉ*･ω･)ﾉ")
+        
+    }
+
+    fn append_to_file(data : String) {
+        let file_path = Path::new("instructions.que");
+        
+        let mut file = OpenOptions::new().append(true).open(file_path).expect("cannot open file");
+        
+        file.write(&data.as_bytes()).expect("error");
+
+        log_info("Added item to queue", "(ﾉ*･ω･)ﾉ")
+        
+    }
